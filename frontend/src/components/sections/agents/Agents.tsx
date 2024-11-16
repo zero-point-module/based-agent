@@ -34,6 +34,7 @@ type Agent = {
   exit_target_usd: number;
   owner_address: string;
   updated_at: string;
+  image_url: string; // New field
 };
 
 type AgentsResponse = Agent[];
@@ -63,11 +64,17 @@ export default function Agents() {
   const generateMockAgents = (count: number): Agent[] => {
     const riskApproaches = ['Conservative', 'Moderate', 'Aggressive', 'Dynamic'];
     const personalities = ['Analyst', 'Trader', 'Observer', 'Risk-Taker'];
+    const descriptions = [
+      'A sophisticated AI trading agent that leverages advanced analytics and market sentiment analysis.',
+      'An intelligent trading system designed to identify and capitalize on market inefficiencies.',
+      'A data-driven agent that combines technical analysis with real-time market data.',
+      'A strategic trading bot that uses machine learning to adapt to market conditions.',
+    ];
 
     return Array.from({ length: count }, (_, i) => ({
       id: i + 1,
-      name: `Agent ${i + 1}`,
-      description: `This is a ${riskApproaches[i % 4].toLowerCase()} trading agent with advanced analytics capabilities.`,
+      name: `Trading Agent ${i + 1}`,
+      description: descriptions[i % descriptions.length],
       tag: `tag-${i + 1}`,
       risk_approach: riskApproaches[i % 4],
       farcaster_personalities: [personalities[i % 4], personalities[(i + 1) % 4]],
@@ -79,6 +86,7 @@ export default function Agents() {
       last_active_at: new Date(Date.now() - Math.random() * 1000000).toISOString(),
       personality_prompt: `Personality prompt for Agent ${i + 1}`,
       owner_address: '0x1234...5678',
+      image_url: `https://picsum.photos/seed/${i + 1}/200/200`, // Random images
     }));
   };
 
@@ -115,46 +123,98 @@ export default function Agents() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {data.pages.map((group) =>
           group.map((agent) => (
-            <Card key={agent.id} className="flex flex-col">
-              <CardHeader>
-                <CardTitle>{agent.name}</CardTitle>
-                <CardDescription>{agent.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium">Risk Approach:</span> {agent.risk_approach}
+            <Card
+              key={agent.id}
+              className="group relative h-[425px] overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black transition-all duration-500 hover:scale-[1.02]"
+            >
+              {/* Animated background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-blue-500/10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
+
+              {/* Glowing orb effect */}
+              <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl transition-all duration-500 group-hover:bg-blue-500/30" />
+
+              {/* Content container */}
+              <div className="relative z-10 flex h-full flex-col p-4">
+                {/* Top section with image and status */}
+                <div className="flex items-start justify-between">
+                  <div className="relative h-32 w-32 overflow-hidden rounded-2xl">
+                    <img
+                      src={agent.image_url}
+                      alt={agent.name}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
                   </div>
-                  <div>
-                    <span className="font-medium">Stop Loss:</span> ${agent.stop_loss_usd}
-                  </div>
-                  <div>
-                    <span className="font-medium">Exit Target:</span> ${agent.exit_target_usd}
+                  {/* Status Chip */}
+                  <div
+                    className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${
+                      agent.is_active
+                        ? 'bg-green-500/20 text-green-200'
+                        : 'bg-red-500/20 text-red-200'
+                    } backdrop-blur-sm`}
+                  >
+                    <div
+                      className={`h-2 w-2 rounded-full ${
+                        agent.is_active ? 'bg-green-400' : 'bg-red-400'
+                      }`}
+                    />
+                    <span className="text-xs font-medium">
+                      {agent.is_active ? 'Active' : 'Inactive'}
+                    </span>
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <div
-                  className={`rounded-full px-2 py-1 text-xs ${
-                    agent.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {agent.is_active ? 'Active' : 'Inactive'}
+
+                {/* Agent info */}
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-white">{agent.name}</h3>
+                    <p className="mt-1 line-clamp-2 text-sm text-gray-400">{agent.description}</p>
+                  </div>
+
+                  {/* Stats with custom styling */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2 truncate rounded-xl bg-white/5 p-3 backdrop-blur-sm">
+                      <p className="text-xs text-gray-500">Risk Level</p>
+                      <p className="truncate font-mono text-sm font-bold text-white">
+                        {agent.risk_approach}
+                      </p>
+                    </div>
+                    <div className="space-y-2 rounded-xl bg-white/5 p-3 backdrop-blur-sm">
+                      <p className="text-xs text-gray-500">Stop Loss</p>
+                      <p className="font-mono text-sm font-bold text-white">
+                        ${agent.stop_loss_usd}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Personality tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {agent.farcaster_personalities.map((personality) => (
+                      <span
+                        key={personality}
+                        className="truncate rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
+                      >
+                        {personality}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Bottom stats */}
+                  <div className="mt-auto flex items-center justify-between text-xs text-gray-400">
+                    <span>Target: ${agent.exit_target_usd}</span>
+                    <span>{new Date(agent.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {new Date(agent.created_at).toLocaleDateString()}
-                </div>
-              </CardFooter>
+              </div>
             </Card>
           ))
         )}
       </div>
 
       <div ref={ref} className="flex justify-center p-4">
-        {isFetchingNextPage && <div>Loading more...</div>}
+        {isFetchingNextPage && <div className="text-sm text-gray-500">Loading more agents...</div>}
       </div>
     </div>
   );
