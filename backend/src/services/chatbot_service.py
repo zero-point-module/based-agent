@@ -26,9 +26,12 @@ class ChatbotService:
         if self.initialized:
             logger.info("Reinitializing chatbot service")
         try:
+            logger.info("Getting all agents...")
             agents = await self.agent_service.get_all_agents()
+            logger.info(f"Found {len(agents)} agents")
             
             # Store existing instances that we want to keep
+            logger.info("Processing existing instances...")
             existing_instances = {}
             for agent in agents:
                 instance_id = hashlib.md5(agent.tag.encode()).hexdigest()
@@ -36,22 +39,22 @@ class ChatbotService:
                     existing_instances[instance_id] = self.instances[instance_id]
             
             # Reset instances and add back existing ones
+            logger.info("Resetting instances...")
             self.instances = existing_instances
             
             # Add new instances
+            logger.info("Creating new instances...")
             for agent in agents:
                 instance_id = hashlib.md5(agent.tag.encode()).hexdigest()
                 if instance_id not in self.instances:
+                    logger.info(f"Creating new instance for agent {agent.tag}")
                     self.instances[instance_id] = ChatbotInstance(
                         state_modifier=initial_state_modifier,
                         agent=agent
                     )
             
-            # Only run XMTP bots for new agents
-            new_agents = [agent for agent in agents 
-                         if hashlib.md5(agent.tag.encode()).hexdigest() not in existing_instances]
-            if new_agents:
-                await run_xmtp_bot(new_agents)
+            logger.info(f"Running XMTP bots for {len(agents)} agents")
+            await run_xmtp_bot(agents)
                 
             self.initialized = True
             logger.info(f"Chatbot service initialized with {len(self.instances)} instances")

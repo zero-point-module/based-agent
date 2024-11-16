@@ -73,7 +73,7 @@ export async function handleOnChainAction(
 
 function isAuthorizedSender(address?: string): boolean {
   if (!address) return false;
-  return address.toLowerCase() === agentConfig.owner.toLowerCase();
+  return address.toLowerCase() === agentConfig.owner?.toLowerCase();
 }
 
 async function forwardToService(
