@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from src.services.warpcast_service import WarpcastService
 from src.services.chatbot_service import ChatbotService
@@ -13,10 +13,6 @@ async def startup_event():
     if not not warpcast_success:
         raise Exception("Failed to initialize services")
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    await warpcast_service.cleanup()
-
 @app.get("/api/health")
 async def health():
     return {"status": "ok"}
@@ -30,10 +26,11 @@ async def get_user_casts(username: str, limit: int = 1000):
 
 class ChatDto(BaseModel):
     message: str
-
+    
 @app.post("/api/chat/{username}")
-async def chat(chat_dto: ChatDto):
-    response = await chatbot_service.stream([chat_dto.message])
+async def chat(request: Request, username: str, chat_dto: ChatDto):
+    messages = [{"role": "user", "content": chat_dto.message}]
+    response = await chatbot_service.stream(username, messages)
     if "error" in response:
         raise HTTPException(status_code=400, detail=response["error"])
     return response
