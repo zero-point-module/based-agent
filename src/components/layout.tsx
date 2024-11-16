@@ -2,6 +2,7 @@ import { Navbar } from './navbar';
 import { useState } from 'react';
 import { useTransition } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { Button } from './ui/button';
 
 interface LayoutProps {
   agentName: string;
@@ -17,7 +18,7 @@ const menuItems: MenuItem[] = [
   {
     title: 'Agents',
     description: 'Manage and interact with your AI agents',
-    path: '/create-agents',
+    path: '/agents',
   },
   {
     title: 'My Account',
@@ -28,7 +29,7 @@ const menuItems: MenuItem[] = [
 
 export default function Layout({ agentName = '' }: LayoutProps) {
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
+  const [_, startTransition] = useTransition();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -80,10 +81,11 @@ export default function Layout({ agentName = '' }: LayoutProps) {
             ))}
           </div>
 
-          <div className="border-t" />
-
-          {/* Recent chats */}
-          <div className="flex flex-1"></div>
+          <div className="z-20 mt-auto pt-6">
+            <Button className="w-full" onClick={() => handleNavigation('/create-agents')}>
+              Create Agent
+            </Button>
+          </div>
         </div>
 
         {/* Clickable area for collapsing when expanded */}
