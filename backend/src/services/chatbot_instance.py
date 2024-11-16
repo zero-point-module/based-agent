@@ -18,7 +18,21 @@ class ChatbotInstance:
         self.message_history = []
         
         # Initialize LLM
-        self.llm = ChatOpenAI(model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"))
+        if os.getenv("HYPERBOLIC_API_KEY"):
+            HYPERBOLIC_API_KEY = os.getenv("HYPERBOLIC_API_KEY")
+            self.llm = ChatOpenAI(
+                model="meta-llama/Meta-Llama-3.1-405B-Instruct",              
+                api_key=HYPERBOLIC_API_KEY,
+                base_url="https://api.hyperbolic.xyz/v1",
+                max_tokens=512,
+                temperature=0.7,
+                top_p=0.9
+            )
+        else:
+            self.llm = ChatOpenAI(
+                model="gpt-4o-mini",
+                api_key=os.getenv("OPENAI_API_KEY")
+            )
         
         # Load or create wallet data
         wallet_data = self._load_wallet_data()
