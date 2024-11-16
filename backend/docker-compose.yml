@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+    environment:
+      - PYTHONPATH=/app
+      - PROXY_HOST=warp
+      - PROXY_PORT=1080
+    restart: always
