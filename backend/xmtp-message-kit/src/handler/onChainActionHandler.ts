@@ -74,8 +74,8 @@ export async function handleOnChainAction(
         return {
           code: 200,
           message: isAuthorized
-            ? "✅ You are authorized to perform on-chain actions"
-            : "❌ You are not authorized. You need to hold an Agent Commandship NFT",
+            ? "✅ Welcome aboard captain! You've got access - time to make some smart investment moves!"
+            : "❌ Access denied! Looks like you need our Commandship NFT to unlock on-chain actions of this Agent. Think of it as your digital backstage pass!",
         };
       }
 
