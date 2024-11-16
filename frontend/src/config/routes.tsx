@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import CreateAgent from '@/components/sections/agents/CreateAgent';
 import Layout from '@/components/layout';
+import Agents from '@/components/sections/agents/Agents';
 
 export const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/agents',
-        element: <div>Agents</div>,
+        element: <Agents />,
       },
       {
         path: '/create-agents',
