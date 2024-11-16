@@ -4,7 +4,9 @@ import { agentConfig } from "./config.js";
 
 export const skills: SkillGroup[] = [
   {
-    ...agentConfig,
+    name: agentConfig.name || "",
+    description: agentConfig.description || "",
+    tag: agentConfig.tag || "",
     skills: [
       {
         skill: "/get_wallet_details",

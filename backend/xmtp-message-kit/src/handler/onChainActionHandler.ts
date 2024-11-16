@@ -105,10 +105,14 @@ export async function handleOnChainAction(
 }
 
 async function isAuthorizedSender(address: string): Promise<boolean> {
+  if (!process.env.AGENT_COLLECTION_ADDRESS) {
+    throw new Error("AGENT_COLLECTION_ADDRESS is not set");
+  }
+
   try {
     const provider = new ethers.JsonRpcProvider(agentConfig.rpc);
     const contract = new ethers.Contract(
-      agentConfig.collectionAddress,
+      process.env.AGENT_COLLECTION_ADDRESS,
       ["function balanceOf(address owner) view returns (uint256)"],
       provider
     );
