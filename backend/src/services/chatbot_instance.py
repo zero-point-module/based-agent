@@ -98,6 +98,14 @@ class ChatbotInstance:
             }
         }
         
-        # Stream the response using the agent
-        response = self.agent.stream(initial_state, config)
-        return response 
+        # Get response from agent
+        response = self.agent.invoke(initial_state, config)
+        
+        # Extract the AI's response from the messages
+        if isinstance(response, dict) and "messages" in response:
+            messages = response["messages"]
+            # Get the last AI message
+            for message in reversed(messages):
+                if isinstance(message, AIMessage):
+                    yield message.content
+                    break

@@ -79,35 +79,35 @@ class ChatbotService:
             
         instance = await self.get_instance(tag)
         try:            
-            raw_responses = await instance.stream(messages)
+            # Get the response from the instance
+            for chunk in instance.stream(messages):
+                # Debug logging
+                logger.info(f"Received chunk: {chunk}")
+                
+                if isinstance(chunk, str):
+                    yield chunk
+                elif isinstance(chunk, dict):
+                    if "agent" in chunk and "messages" in chunk["agent"]:
+                        for message in chunk["agent"]["messages"]:
+                            if isinstance(message, (str, dict)):
+                                content = message.get("content") if isinstance(message, dict) else message
+                                if content:
+                                    yield content
+                            elif hasattr(message, "content") and message.content:
+                                yield message.content
+                            
+                    elif "tools" in chunk and "messages" in chunk["tools"]:
+                        for message in chunk["tools"]["messages"]:
+                            if isinstance(message, (str, dict)):
+                                content = message.get("content") if isinstance(message, dict) else message
+                                if content:
+                                    yield content
+                            elif hasattr(message, "content") and message.content:
+                                yield message.content
+
             self.instances[instance.instance_id] = instance
 
-            # Extract only the relevant messages
-            formatted_responses = []
-            for response in raw_responses:
-                if "agent" in response:
-                    for message in response["agent"]["messages"]:
-                        if hasattr(message, "content") and message.content:
-                            formatted_responses.append({
-                                "role": "assistant",
-                                "content": message.content
-                            })
-                elif "tools" in response:
-                    for message in response["tools"]["messages"]:
-                        if hasattr(message, "content") and message.content:
-                            formatted_responses.append({
-                                "role": "tool",
-                                "content": message.content
-                            })
-
-            return {
-                "messages": formatted_responses,
-                "status": "success"
-            }
         except Exception as e:
             logger.error(f"Error in stream: {str(e)}")
-            return {
-                "error": str(e),
-                "status": "error"
-            }
+            yield f"Error: {str(e)}"
     

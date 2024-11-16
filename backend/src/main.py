@@ -68,10 +68,11 @@ async def chat(
     
     messages = [{"role": "user", "content": chat_dto.message}]
     
-    # Collect all chunks from the stream into a single response
+    # Collect all chunks into a single response
     full_response = ""
     async for chunk in chatbot_service.stream(tag, messages):
-        full_response += chunk
+        if isinstance(chunk, str):
+            full_response += chunk
     
     return {"response": full_response}
 
