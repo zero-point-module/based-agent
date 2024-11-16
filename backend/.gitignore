@@ -32,6 +32,3 @@ ENV/
 *.swp
 *.swo
 .DS_Store
-
-# Twitter credentials
-config/twitter_accounts.json 
