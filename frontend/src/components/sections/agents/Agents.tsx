@@ -128,7 +128,7 @@ export default function Agents() {
           group.map((agent) => (
             <Card
               key={agent.id}
-              className="group relative h-[425px] overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black transition-all duration-500 hover:scale-[1.02]"
+              className="group relative h-[425px] overflow-hidden border border-white/10 bg-gradient-to-br from-black via-gray-900 to-black transition-all duration-500 hover:scale-[1.02]"
             >
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-blue-500/10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
