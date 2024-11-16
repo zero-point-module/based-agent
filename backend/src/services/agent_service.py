@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from src.models.agent import AgentModel, AgentCreate, RiskApproach
+from src.models.agent import AgentModel, AgentCreate
 from typing import Optional, List
 import logging
 
@@ -50,4 +50,13 @@ class AgentService:
             return result.scalars().all()
         except Exception as e:
             logger.error(f"Error in get_agents_by_owner: {str(e)}")
+            raise 
+  
+    async def get_all_agents(self) -> List[AgentModel]:
+        try:
+            query = select(AgentModel)
+            result = await self.db.execute(query)
+            return result.scalars().all()
+        except Exception as e:
+            logger.error(f"Error in get_all_agents: {str(e)}")
             raise 

@@ -1,4 +1,5 @@
 import os
+import hashlib
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, AIMessage
@@ -7,14 +8,16 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
+from src.models.agent import AgentModel
 from typing import List
 
 load_dotenv()
 
 class ChatbotInstance:
-    def __init__(self, instance_id: str, state_modifier: str):
-        self.instance_id = instance_id
-        self.wallet_data_file = os.path.join("src", "data", f"wallet_data_{instance_id}.txt")
+    def __init__(self, state_modifier: str, agent: AgentModel):
+        self.instance_id = hashlib.md5(agent.tag.encode()).hexdigest()
+        self.agent = agent
+        self.wallet_data_file = os.path.join("src", "data", f"wallet_data_{self.instance_id}.txt")
         self.message_history = []
         
         # Initialize LLM
