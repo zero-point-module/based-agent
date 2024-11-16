@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
@@ -15,6 +15,7 @@ class ChatbotInstance:
     def __init__(self, instance_id: str, state_modifier: str):
         self.instance_id = instance_id
         self.wallet_data_file = os.path.join("src", "data", f"wallet_data_{instance_id}.txt")
+        self.message_history = []
         
         # Initialize LLM
         self.llm = ChatOpenAI(model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"))
@@ -51,17 +52,25 @@ class ChatbotInstance:
         with open(self.wallet_data_file, "w") as f:
             f.write(wallet_data)
     
-    def stream(self, messages: List[str]):
+    def stream(self, messages: List[dict]):
         """
         Stream responses for a list of messages
         Args:
-            messages: List of message strings
+            messages: List of message dictionaries with 'role' and 'content'
         """
-        # Convert the message string to a HumanMessage object
-        human_messages = [HumanMessage(content=msg) for msg in messages]
+        # Convert messages to appropriate LangChain message types
+        for msg in messages:
+            if msg["role"] == "user":
+                self.message_history.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                self.message_history.append(AIMessage(content=msg["content"]))
         
-        # Create the initial state
-        initial_state = {"messages": human_messages}
+        # Ensure we have at least one message
+        if not self.message_history:
+            raise ValueError("No messages provided")
+        
+        # Create the initial state with full history
+        initial_state = {"messages": self.message_history}
         
         # Create the config with required checkpointer parameters
         config = {

@@ -1,6 +1,5 @@
 import hashlib
 from typing import Dict, List
-from langgraph.checkpoint.memory import MemorySaver
 from src.services.chatbot_instance import ChatbotInstance
 
 def initial_state_modifier(state):
@@ -30,13 +29,30 @@ class ChatbotService:
     async def stream(self, username: str, messages: List[dict]):
         """Stream messages to the appropriate chatbot instance"""
         instance = self.get_instance(username)
-        try:
-            # Extract just the content from the messages
-            message_contents = [msg["content"] for msg in messages]
-            responses = instance.stream(message_contents)
-            
+        try:            
+            raw_responses = instance.stream(messages)
+            self.instances[instance.instance_id] = instance
+
+            # Extract only the relevant messages
+            formatted_responses = []
+            for response in raw_responses:
+                if "agent" in response:
+                    for message in response["agent"]["messages"]:
+                        if hasattr(message, "content") and message.content:  # Check for non-empty content
+                            formatted_responses.append({
+                                "role": "assistant",
+                                "content": message.content
+                            })
+                elif "tools" in response:
+                    for message in response["tools"]["messages"]:
+                        if hasattr(message, "content") and message.content:  # Check for non-empty content
+                            formatted_responses.append({
+                                "role": "tool",
+                                "content": message.content
+                            })
+
             return {
-                "response": responses,
+                "messages": formatted_responses,
                 "status": "success"
             }
         except Exception as e:
