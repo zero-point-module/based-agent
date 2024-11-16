@@ -35,6 +35,6 @@ class ChatDto(BaseModel):
 async def chat(chat_dto: ChatDto):
     response = await chatbot_service.stream([chat_dto.message])
     if "error" in response:
-        raise HTTPException(status_code=400, detail=casts["error"])
+        raise HTTPException(status_code=400, detail=response["error"])
     return response
 
