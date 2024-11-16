@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def run_new_xmtp_bot(config):
     # Runs npm command to start the bot with custom config as environment variable
-    subprocess.run(["npm", "run", "start"], env=config, cwd="xmtp-message-kit")
+    subprocess.run(["npm", "run", "start"], env=config, cwd="/app/xmtp-app")
     
 async def run_xmtp_bot(agents: List[AgentModel]):
     # Load the config from environment variables
@@ -18,8 +18,6 @@ async def run_xmtp_bot(agents: List[AgentModel]):
         "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
         "TEST_ENCRYPTION_KEY": "0x9268c6b68625c46f00c1e5960b7f6b50b7a69c88d26f7c366073749adba8d5df"
     }
-    
-    configs = list(map(lambda config: {**base_config, **config}, configs))
     
     for agent in agents:
         instance_id = hashlib.md5(agent.tag.encode()).hexdigest()

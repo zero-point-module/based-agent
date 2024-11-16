@@ -2,7 +2,7 @@ import type { SkillGroup } from "@xmtp/message-kit";
 import { handleOnChainAction } from "./handler/onChainActionHandler.js";
 import { agentConfig } from "./config.js";
 
-export const skills: SkillGroup[] = [
+export const skills: any[] = [
   {
     name: agentConfig.name || "",
     description: agentConfig.description || "",

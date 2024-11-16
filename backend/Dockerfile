@@ -1,31 +1,34 @@
-FROM python:3.11-slim
+FROM node:20-bullseye-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
     curl \
     gnupg \
     gcc \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g yarn \
-    && rm -rf /var/lib/apt/lists/*
+# Create and activate virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
+# Install Python requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy application files
 COPY src/ /app/src/
 COPY migrations/ /app/migrations/
 
+# Setup XMTP app
 COPY xmtp-message-kit /app/xmtp-app
-RUN cd /app/xmtp-app && yarn && cd ..
+WORKDIR /app/xmtp-app
+RUN yarn install
+WORKDIR /app
 
 ENV PYTHONPATH=/app
 

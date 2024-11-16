@@ -26,7 +26,7 @@ export function Navbar({ agentName }: NavbarProps) {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b px-6">
+    <header className="z-30 flex h-16 items-center justify-between border-b border-white/10 px-6">
       <div className="flex items-center gap-3">
         <span className="font-medium">{agentName}</span>
       </div>

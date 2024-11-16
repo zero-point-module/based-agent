@@ -20,17 +20,16 @@ const menuItems: MenuItem[] = [
     description: 'Manage and interact with your AI agents',
     path: '/agents',
   },
-  {
-    title: 'My Account',
-    description: 'View and update your personal settings',
-    path: '/account',
-  },
+  // {
+  //   title: 'My Account',
+  //   description: 'View and update your personal settings',
+  //   path: '/account',
+  // },
 ];
 
 export default function Layout({ agentName = '' }: LayoutProps) {
   const navigate = useNavigate();
   const [_, startTransition] = useTransition();
-
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleNavigation = (path: string) => {
@@ -40,14 +39,18 @@ export default function Layout({ agentName = '' }: LayoutProps) {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background">
+    <div className="relative flex h-screen w-full overflow-hidden bg-black">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-pink-500/10" />
+      <div className="absolute -left-32 top-0 h-[500px] w-[500px] animate-pulse rounded-full bg-blue-500/20 blur-[120px]" />
+      <div className="absolute -right-32 bottom-0 h-[500px] w-[500px] animate-pulse rounded-full bg-purple-500/20 blur-[120px]" />
+
       {/* Sidebar */}
       <div
         className={`relative flex ${
           isCollapsed ? 'w-10' : 'w-[320px]'
-        } flex-col border-r transition-all duration-300 ease-in-out`}
+        } flex-col border-r border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 ease-in-out`}
       >
-        {/* Clickable area for expanding when collapsed */}
         {isCollapsed && (
           <div
             className="absolute inset-0 z-20 cursor-pointer"
@@ -63,49 +66,49 @@ export default function Layout({ agentName = '' }: LayoutProps) {
           } flex h-full flex-col gap-6 p-6 transition-all`}
         >
           <div>
-            <h1 className="text-2xl font-bold">Hello Human</h1>
+            <h1 className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-2xl font-bold text-transparent">
+              Hello <span className="italic">Human</span>
+            </h1>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="relative z-30 flex flex-col gap-3">
             {menuItems.map((item) => (
               <button
                 key={item.title}
                 onClick={() => handleNavigation(item.path)}
-                className="relative z-20 flex flex-col gap-1 rounded-md text-left"
+                className="group relative flex flex-col gap-1 rounded-md p-3 text-left transition-all hover:bg-white/5"
               >
-                <span className="font-medium">{item.title}</span>
-                <span className="text-sm text-gray-500 text-muted-foreground">
-                  {item.description}
-                </span>
+                <span className="font-medium text-white">{item.title}</span>
+                <span className="text-sm text-gray-400">{item.description}</span>
               </button>
             ))}
           </div>
 
-          <div className="z-20 mt-auto pt-6">
-            <Button className="w-full" onClick={() => handleNavigation('/create-agents')}>
-              Create Agent
+          <div className="relative z-30 mt-auto pt-6">
+            <Button
+              className="group relative w-full overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white transition-all hover:scale-105"
+              onClick={() => handleNavigation('/create-agents')}
+            >
+              <span className="relative z-10">Create Agent</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
             </Button>
           </div>
         </div>
 
-        {/* Clickable area for collapsing when expanded */}
         {!isCollapsed && (
           <div
-            className="absolute inset-0 z-10 cursor-pointer"
+            className="absolute inset-0 cursor-pointer"
             onClick={() => setIsCollapsed(true)}
             aria-label="Collapse sidebar"
           >
-            <div className="pointer-events-none absolute inset-x-2 inset-y-16 rounded-lg bg-background" />
+            <div className="pointer-events-none absolute inset-x-2 inset-y-16 rounded-lg" />
           </div>
         )}
       </div>
 
       {/* Main content area */}
-      <div className="flex flex-1 flex-col">
-        {/* Navbar */}
+      <div className="relative z-10 flex flex-1 flex-col">
         <Navbar agentName={agentName} />
-
-        {/* Main content */}
         <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>
