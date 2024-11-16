@@ -32,3 +32,6 @@ ENV/
 *.swp
 *.swo
 .DS_Store
+
+# PostgreSQL
+postgres_data/

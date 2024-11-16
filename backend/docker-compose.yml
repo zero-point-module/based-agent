@@ -11,15 +11,34 @@ services:
       - ./src:/app/src
     environment:
       - PYTHONPATH=/app
-      - PROXY_HOST=warp
-      - PROXY_PORT=1080
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     restart: always
     networks:
       - app_network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+    depends_on:
+      db:
+        condition: service_healthy
 
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
 networks:
   app_network:
     driver: bridge
