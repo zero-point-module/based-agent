@@ -92,6 +92,20 @@ export const skills: SkillGroup[] = [
           },
         },
       },
+      {
+        skill: "/check_authorization",
+        handler: handleOnChainAction,
+        description: "Check if you are authorized to perform on-chain action and answer accordingly",
+        examples: ["/check_authorization"],
+        params: {},
+      },
+      {
+        skill: "/trending_tokens",
+        handler: handleOnChainAction,
+        description: "Get the top 5 trending tokens with their price movements",
+        examples: ["/trending_tokens"],
+        params: {},
+      },
     ],
   },
 ];
