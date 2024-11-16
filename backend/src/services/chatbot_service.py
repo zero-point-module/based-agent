@@ -9,7 +9,10 @@ def initial_state_modifier(state):
     return state
 
 class ChatbotService:
-    def __init__(self):
+    def __init__(self, database):
+        self.db = database
+        # TODO: Get all instances from database
+        
         self.instances: Dict[str, ChatbotInstance] = {}
         self.state_modifier = initial_state_modifier
     

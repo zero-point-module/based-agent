@@ -9,7 +9,8 @@ from src.services.agent_service import AgentService
 
 app = FastAPI()
 warpcast_service = WarpcastService()
-chatbot_service = ChatbotService()
+db = Depends(get_db)
+chatbot_service = ChatbotService(db)
 
 @app.on_event("startup")
 async def startup_event():
