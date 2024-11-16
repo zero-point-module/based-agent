@@ -25,7 +25,7 @@ const connectors = connectorsForWallets(
     },
   ],
   {
-    appName: 'degen-ai',
+    appName: 'based-agent',
     projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
   }
 );
