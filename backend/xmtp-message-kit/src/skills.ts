@@ -4,7 +4,9 @@ import { agentConfig } from "./config.js";
 
 export const skills: any[] = [
   {
-    ...agentConfig,
+    name: agentConfig.name || "",
+    description: agentConfig.description || "",
+    tag: agentConfig.tag || "",
     skills: [
       {
         skill: "/get_wallet_details",
@@ -91,6 +93,20 @@ export const skills: any[] = [
             type: "number",
           },
         },
+      },
+      {
+        skill: "/check_authorization",
+        handler: handleOnChainAction,
+        description: "Check if you are authorized to perform on-chain action and answer accordingly",
+        examples: ["/check_authorization"],
+        params: {},
+      },
+      {
+        skill: "/trending_tokens",
+        handler: handleOnChainAction,
+        description: "Get the top 5 trending tokens with their price movements",
+        examples: ["/trending_tokens"],
+        params: {},
       },
     ],
   },

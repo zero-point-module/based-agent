@@ -8,6 +8,8 @@ export const agentConfig = {
   tag: env.AGENT_TAG,
   description: env.AGENT_DESCRIPTION,
   owner: env.AGENT_OWNER,
+  rpc: env.AGENT_RPC,
+  collectionAddress: env.AGENT_COLLECTION_ADDRESS,
 } as const;
 
 export default agentConfig; 

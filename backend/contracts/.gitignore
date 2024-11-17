@@ -1,0 +1,50 @@
+# Compiler files
+cache/
+out/
+artifacts/
+cache_hardhat/
+
+# Ignores development broadcast logs
+!/broadcast
+/broadcast/*/31337/
+/broadcast/**/dry-run/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+# Coverage
+coverage/
+coverage.json
+
+# Node modules
+node_modules/
+
+# Build files
+dist/
+build/
+
+# Hardhat files
+artifacts/
+typechain/
+typechain-types/
+
+# Foundry
+forge-cache/
+forge-out/
+
+# Local deployments
+deployments/localhost/
+deployments/hardhat/
+
+# Debug logs
+debug/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
