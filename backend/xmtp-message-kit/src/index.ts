@@ -11,4 +11,6 @@ run(async (context: HandlerContext) => {
     const result = (await agent_prompt(address)) ?? "No response available anon!";
     return result;
   });
+}, {
+  attachments: true,
 });

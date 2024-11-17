@@ -158,18 +158,30 @@ async function forwardToService(
   params: Record<string, any>,
   context: any
 ): Promise<any> {
-  // TODO: Implement your service client call here
-  // This is where you'd call your external service
-  // const service: OnChainService = getServiceClient();
-  // return service.executeAction(action, params, context);
+  try {
+    const response = await fetch(`http://0.0.0.0:8000/api/chat/${agentConfig.tag}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: JSON.stringify({ action, ...params })
+      })
+    });
 
-  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-  // Temporary mock response
-  return {
-    success: true,
-    action,
-    params,
-    timestamp: context.timestamp,
-  };
+    const data = await response.json();
+    return {
+      success: true,
+      ...(data as object),
+      action,
+      params
+    };
+  } catch (error) {
+    console.error('Error forwarding to service:', error);
+    throw error;
+  }
 }

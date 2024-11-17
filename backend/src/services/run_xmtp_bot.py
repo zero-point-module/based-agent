@@ -12,13 +12,14 @@ logger = logging.getLogger(__name__)
 
 def run_new_xmtp_bot(config):
     # Runs npm command to start the bot with custom config as environment variable
+    logger.info(f"Running XMTP bot with config: {config}")
     subprocess.Popen(["npm", "run", "start"], env=config, cwd="/app/xmtp-app")
     
 async def run_xmtp_bot(agents: List[AgentModel]):
     # Load the config from environment variables
     base_config = {
-        "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
-        "TEST_ENCRYPTION_KEY": "0x9268c6b68625c46f00c1e5960b7f6b50b7a69c88d26f7c366073749adba8d5df"
+        "OPEN_AI_API_KEY": os.getenv("OPEN_AI_API_KEY"),
+        "TEST_ENCRYPTION_KEY": "0x9268c6b68625c46f00c1e5960b7f6b50b7a69c88d26f7c366073749adba8d5df",
     }
     
     for agent in agents:
@@ -33,8 +34,6 @@ async def run_xmtp_bot(agents: List[AgentModel]):
         seed = private_key.to_hex()
 
         config = {**base_config, "KEY": seed, "AGENT_NAME": agent.name, "AGENT_TAG": agent.tag, "AGENT_DESCRIPTION": agent.description, "AGENT_OWNER": agent.owner_address}
-        
-        logger.info(f"Running XMTP bot with config: {config}")
 
         # Run the new XMTP bot with the config
         thread = Thread(target = run_new_xmtp_bot, args = (config,))

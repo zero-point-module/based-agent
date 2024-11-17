@@ -1,4 +1,3 @@
-import type { SkillGroup } from "@xmtp/message-kit";
 import { handleOnChainAction } from "./handler/onChainActionHandler.js";
 import { agentConfig } from "./config.js";
 

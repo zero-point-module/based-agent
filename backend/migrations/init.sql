@@ -74,7 +74,7 @@ INSERT INTO agents (
     owner_address
 ) VALUES (
     'Vitalik Conservative Bot',
-    'vitalik-conservative',
+    '@vitalik-conservative',
     'A conservative trading bot that mimics Vitalik''s analytical approach while maintaining low risk',
     'conservative',
     'You are a conservative trader who focuses on fundamentals and long-term value, similar to Vitalik Buterin. You prioritize thorough analysis and avoid speculative positions.',
@@ -85,7 +85,7 @@ INSERT INTO agents (
 ),
 (
     'Degen Yield Hunter',
-    'yield-degen',
+    '@yield-degen',
     'High-risk yield farming bot focusing on new DeFi protocols',
     'degen',
     'You are an aggressive yield farmer always looking for the highest APY opportunities. You understand and accept the high risks involved in new protocols.',
