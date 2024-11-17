@@ -1,23 +1,16 @@
-import { API_URL } from '@/config/constants';
+// import { API_URL } from '@/config/constants';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-import { useAccount } from 'wagmi';
+// import toast from 'react-hot-toast';
+// import { useAccount } from 'wagmi';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
-type ApiError = {
-  message: string;
-  code?: string;
-  status?: number;
-};
+// type ApiError = {
+//   message: string;
+//   code?: string;
+//   status?: number;
+// };
 
 type Agent = {
   tag: string;
@@ -37,12 +30,12 @@ type Agent = {
   image_url: string; // New field
 };
 
-type AgentsResponse = Agent[];
+// type AgentsResponse = Agent[];
 
 const ITEMS_PER_PAGE = 12;
 
 export default function Agents() {
-  const { address } = useAccount();
+  // const { address } = useAccount();
   const { ref, inView } = useInView();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
