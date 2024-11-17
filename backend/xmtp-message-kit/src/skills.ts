@@ -39,7 +39,6 @@ export const skills: any[] = [
           },
         },
       },
-      
       {
         skill: "/transfer [amount] [token] [to]",
         handler: handleOnChainAction,
