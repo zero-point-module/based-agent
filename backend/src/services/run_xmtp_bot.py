@@ -18,7 +18,7 @@ def run_new_xmtp_bot(config):
 async def run_xmtp_bot(agents: List[AgentModel]):
     # Load the config from environment variables
     base_config = {
-        "OPEN_AI_API_KEY": os.getenv("OPEN_AI_API_KEY"),
+        "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
         "TEST_ENCRYPTION_KEY": "0x9268c6b68625c46f00c1e5960b7f6b50b7a69c88d26f7c366073749adba8d5df",
     }
     
