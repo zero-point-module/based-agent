@@ -1,24 +1,40 @@
-FROM node:20-bullseye-slim
+FROM ubuntu:23.10
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
+# Avoid prompts from apt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    gnupg \
+    ca-certificates \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update && apt-get install -y \
+    nodejs \
     python3 \
     python3-pip \
     python3-venv \
-    curl \
-    gnupg \
     gcc \
     postgresql-client \
+    python3-dev \
+    libc6 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Install Python requirements
+# Upgrade pip and install build tools
+RUN pip install --no-cache-dir pip --upgrade
+RUN pip install --no-cache-dir wheel setuptools
+
+# Install Python requirements (excluding problematic package)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN grep -v "cdp-agentkit-core" requirements.txt > requirements_filtered.txt && \
+    pip install --no-cache-dir -r requirements_filtered.txt
 
 # Copy application files
 COPY src/ /app/src/
@@ -27,7 +43,7 @@ COPY migrations/ /app/migrations/
 # Setup XMTP app
 COPY xmtp-message-kit /app/xmtp-app
 WORKDIR /app/xmtp-app
-RUN yarn install
+RUN npm install -g yarn && yarn install
 WORKDIR /app
 
 ENV PYTHONPATH=/app
