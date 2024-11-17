@@ -6,21 +6,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+extended_personality_prefix = "My personality is hardly based on the following tweets: "
+
 class AgentService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_agent(self, agent: AgentCreate) -> AgentModel:
+    async def create_agent(self, agent: AgentCreate, extended_personality: List[str]) -> AgentModel:
         try:
             # Convert the enum value to lowercase to match DB enum
             risk_approach_value = agent.risk_approach.value.lower()
+            
+            personalyt_prompt = agent.personality_prompt + " " + "; ".join(extended_personality)
+            logger.info(f"Extended personality prompt: {personalyt_prompt}")
             
             db_agent = AgentModel(
                 name=agent.name,
                 tag=agent.tag,
                 description=agent.description,
                 risk_approach=risk_approach_value,  # Use the string value
-                personality_prompt=agent.personality_prompt,
+                personality_prompt=personalyt_prompt,
                 farcaster_personalities=agent.farcaster_personalities,
                 exit_target_usd=agent.exit_target_usd,
                 stop_loss_usd=agent.stop_loss_usd,

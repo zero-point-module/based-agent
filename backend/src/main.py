@@ -8,6 +8,7 @@ from src.services.database import get_db, engine
 from src.services.agent_service import AgentService
 import logging
 import sys
+import random
 
 # Configure root logger
 logging.basicConfig(
@@ -115,8 +116,12 @@ async def create_agent(
     if existing_agent:
         raise HTTPException(status_code=400, detail="Agent with this tag already exists")
     
+    casts = []
+    for personality in agent.farcaster_personalities:
+        casts = casts.append(await get_user_casts(personality))
+    
     try:
-        created_agent = await agent_service.create_agent(agent)
+        created_agent = await agent_service.create_agent(agent, random.shuffle(casts))
         await app.state.chatbot_service.initialize()
         return created_agent
     except Exception as e:
