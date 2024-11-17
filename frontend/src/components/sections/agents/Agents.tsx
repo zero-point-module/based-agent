@@ -5,6 +5,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Card } from '@/components/ui/card';
+import { useTransition } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // type ApiError = {
 //   message: string;
@@ -35,6 +37,8 @@ type Agent = {
 const ITEMS_PER_PAGE = 12;
 
 export default function Agents() {
+  const navigate = useNavigate();
+  const [_, startTransition] = useTransition();
   // const { address } = useAccount();
   const { ref, inView } = useInView();
 
@@ -110,6 +114,12 @@ export default function Agents() {
     return MOCK_AGENTS.slice(startIndex, endIndex);
   };
 
+  const handleNavigation = (path: string) => {
+    startTransition(() => {
+      navigate(path);
+    });
+  };
+
   if (status === 'pending') return <div className="text-center">Loading...</div>;
   if (status === 'error') return <div className="text-center">Error loading agents</div>;
   if (!data?.pages[0]?.length) return <div className="text-center">No agents found</div>;
@@ -121,7 +131,8 @@ export default function Agents() {
           group.map((agent) => (
             <Card
               key={agent.id}
-              className="group relative h-[425px] overflow-hidden border border-white/10 bg-gradient-to-br from-black via-gray-900 to-black transition-all duration-500 hover:scale-[1.02]"
+              onClick={() => handleNavigation('/create-agents')}
+              className="group relative h-[425px] cursor-pointer overflow-hidden border border-white/10 bg-gradient-to-br from-black via-gray-900 to-black transition-all duration-500 hover:scale-[1.02]"
             >
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-blue-500/10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
