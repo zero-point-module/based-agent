@@ -6,6 +6,8 @@ from src.models.agent import AgentModel
 import hashlib
 from typing import List
 import logging
+from eth_keys import keys
+
 logger = logging.getLogger(__name__)
 
 def run_new_xmtp_bot(config):
@@ -25,7 +27,10 @@ async def run_xmtp_bot(agents: List[AgentModel]):
         with open(wallet_data_file, "r") as file:
             wallet_data = file.read()
             wallet_data = json.loads(wallet_data)
-        seed = wallet_data["seed"]
+        # Create private key from seed (using first 32 bytes)
+        seed_hex = wallet_data["seed"][:64]  # Take first 64 hex chars (32 bytes)
+        private_key = keys.PrivateKey(bytes.fromhex(seed_hex))
+        seed = private_key.to_hex()
 
         config = {**base_config, "KEY": seed, "AGENT_NAME": agent.name, "AGENT_TAG": agent.tag, "AGENT_DESCRIPTION": agent.description, "AGENT_OWNER": agent.owner_address}
         
